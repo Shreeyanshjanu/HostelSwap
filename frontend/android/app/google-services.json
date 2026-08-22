@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "309782887849",
+    "project_id": "hostelswap-af004",
+    "storage_bucket": "hostelswap-af004.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309782887849:android:2caf302c3aa300559198b8",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqPqKVWnX_TuA16vkzpP25Q2GBhc7oOVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
