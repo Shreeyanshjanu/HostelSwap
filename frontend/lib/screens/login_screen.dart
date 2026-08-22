@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../providers/auth_provider.dart';
 import '../config/app_constants.dart';
 import '../utils/responsive_helper.dart';
@@ -14,133 +15,228 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _collegeIdController = TextEditingController();
+
   String? _selectedGender;
   bool _isLoading = false;
 
+  // ============================================================
+  // DESIGN SETTINGS
+  // Change these values to adjust the layout easily
+  // ============================================================
+
+  // Maximum width of the login section
+  static const double maxContentWidth = 400;
+
+  // 3D illustration height
+  static const double imageHeightDesktop = 280;
+  static const double imageHeightMobile = 210;
+
+  // Space between illustration and login card
+  static const double imageCardSpacing = 5;
+
+  // Login card padding
+  static const double cardPadding = 32;
+
+  // Space between form fields
+  static const double fieldSpacing = 16;
+
+  // Space before login button
+  static const double buttonSpacing = 24;
+
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = ResponsiveHelper.isMobile(context);
+
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(ResponsiveHelper.isMobile(context) ? 24.0 : 48.0),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Card(
-              elevation: 8,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Logo
-                      Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.house,
-                          size: 48,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'HostelSwap',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        'Find your perfect hostel swap match',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
+      backgroundColor: const Color(0xFFF8F7FF),
 
-                      // College ID
-                      TextFormField(
-                        controller: _collegeIdController,
-                        decoration: const InputDecoration(
-                          labelText: 'College ID',
-                          hintText: 'e.g., 2024CS101',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.badge),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your College ID';
-                          }
-                          if (value.length < 5) {
-                            return 'Invalid College ID format';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 20 : 40,
+              vertical: isMobile ? 20 : 30,
+            ),
 
-                      // Gender Dropdown
-                      DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Gender',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        value: _selectedGender,
-                        items: AppConstants.genders.map((gender) {
-                          return DropdownMenuItem(
-                            value: gender,
-                            child: Text(gender.toUpperCase()),
-                          );
-                        }).toList(),
-                        onChanged: (value) => setState(() => _selectedGender = value),
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Please select your gender';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: maxContentWidth),
 
-                      // Login Button
-                      ElevatedButton(
-                        onPressed: _isLoading ? null : _login,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ==================================================
+                  // 3D HOSTEL SWAP ILLUSTRATION
+                  // ==================================================
+                  SizedBox(
+                    height: isMobile ? imageHeightMobile : imageHeightDesktop,
+                    width: double.infinity,
+
+                    child: Image.asset(
+                      'assets/images/hostel_swap_login.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
+
+                  // Space between image and card
+                  const SizedBox(height: imageCardSpacing),
+
+                  // ==================================================
+                  // LOGIN CARD
+                  // ==================================================
+                  Card(
+                    elevation: 8,
+                    shadowColor: Colors.black26,
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(cardPadding),
+
+                      child: Form(
+                        key: _formKey,
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                          children: [
+                            // ==================================================
+                            // TITLE
+                            // ==================================================
+                            Text(
+                              'HostelSwap',
+                              style: TextStyle(
+                                fontSize: isMobile ? 28 : 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            const SizedBox(height: 6),
+
+                            Text(
+                              'Find your perfect hostel swap match',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            const SizedBox(height: 28),
+
+                            // ==================================================
+                            // COLLEGE ID
+                            // ==================================================
+                            TextFormField(
+                              controller: _collegeIdController,
+
+                              decoration: const InputDecoration(
+                                labelText: 'College ID',
+                                hintText: 'e.g., 12419027',
+
+                                border: OutlineInputBorder(),
+
+                                prefixIcon: Icon(Icons.badge_outlined),
+                              ),
+
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter your College ID';
+                                }
+
+                                if (value.trim().length < 5) {
+                                  return 'Invalid College ID format';
+                                }
+
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: fieldSpacing),
+
+                            // ==================================================
+                            // GENDER
+                            // ==================================================
+                            DropdownButtonFormField<String>(
+                              decoration: const InputDecoration(
+                                labelText: 'Gender',
+
+                                border: OutlineInputBorder(),
+
+                                prefixIcon: Icon(Icons.person_outline),
+                              ),
+
+                              value: _selectedGender,
+
+                              items: AppConstants.genders.map((gender) {
+                                return DropdownMenuItem<String>(
+                                  value: gender,
+                                  child: Text(gender.toUpperCase()),
+                                );
+                              }).toList(),
+
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedGender = value;
+                                });
+                              },
+
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please select your gender';
+                                }
+
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: buttonSpacing),
+
+                            // ==================================================
+                            // LOGIN BUTTON
+                            // ==================================================
+                            SizedBox(
+                              height: 52,
+
+                              child: ElevatedButton(
+                                onPressed: _isLoading ? null : _login,
+
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+
+                                child: _isLoading
+                                    ? const SizedBox(
+                                        height: 22,
+                                        width: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -149,17 +245,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  void _login() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      
+  // ============================================================
+  // LOGIN
+  // ============================================================
+
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
       final authNotifier = ref.read(authProvider.notifier);
+
       final user = await authNotifier.login(
         _collegeIdController.text.trim(),
         _selectedGender!,
       );
 
-      setState(() => _isLoading = false);
+      if (!mounted) return;
 
       if (user != null) {
         Navigator.pushReplacementNamed(context, '/dashboard');
@@ -170,6 +277,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             backgroundColor: Colors.red,
           ),
         );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
