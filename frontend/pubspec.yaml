@@ -41,6 +41,7 @@ dependencies:
   firebase_messaging: ^16.0.0
   shimmer: ^3.0.0
   flutter_local_notifications: ^19.4.0
+  lottie: ^3.3.3
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +61,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/hostel_swap_login.png
+    - assets/icons/chatbot.json
+    - assets/icons/user.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

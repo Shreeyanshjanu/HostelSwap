@@ -37,9 +37,20 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Chatbot Assistant'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+
+        // ← Back button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Back',
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+
+        title: const Text('AI Chatbot Assistant'),
+
         actions: [
           IconButton(
             icon: const Icon(Icons.clear_all),
@@ -148,10 +159,14 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
 
     try {
       // Send to FastAPI
-      final response = await _apiService.sendChatMessage(message, user.collegeId);
+      final response = await _apiService.sendChatMessage(
+        message,
+        user.collegeId,
+      );
 
       // Check if it's a swap request
-      if (response['intent'] == 'swap_request' && response['parsed_data'] != null) {
+      if (response['intent'] == 'swap_request' &&
+          response['parsed_data'] != null) {
         // Save the request to Supabase
         final data = response['parsed_data'];
         final requestData = {
@@ -164,17 +179,18 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
           'desired_seater': data['desired_seater'],
           'status': 'active',
         };
-        
+
         await ref.read(createRequestProvider(requestData).future);
-        
+
         setState(() {
           _messages.add({
             'sender': 'bot',
-            'message': '✅ ${response['message']}\n\n'
+            'message':
+                '✅ ${response['message']}\n\n'
                 '📋 Your request has been posted! Check the dashboard to see it.',
           });
         });
-        
+
         // Refresh dashboard
         ref.invalidate(requestProvider);
       } else {
@@ -182,7 +198,10 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
         setState(() {
           _messages.add({
             'sender': 'bot',
-            'message': response['message'] ?? response['answer'] ?? 'I didn\'t understand that.',
+            'message':
+                response['message'] ??
+                response['answer'] ??
+                'I didn\'t understand that.',
           });
         });
       }
@@ -202,10 +221,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
   void _clearChat() {
     setState(() {
       _messages = [
-        {
-          'sender': 'bot',
-          'message': '👋 Chat cleared! How can I help you?',
-        },
+        {'sender': 'bot', 'message': '👋 Chat cleared! How can I help you?'},
       ];
     });
   }
