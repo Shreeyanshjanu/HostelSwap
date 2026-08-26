@@ -14,4 +14,6 @@ backend/venv/
 
 # OS
 .DS_Store
-Thumbs.db
+Thumbs.dbbackend/.env
+backend/firebase-credentials.json
+backend/chroma_db/
