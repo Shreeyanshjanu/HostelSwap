@@ -202,9 +202,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
-Your Name – your.email@example.com
+Your Name – shreeyansh and harshit singh
 
-Project Link: https://github.com/yourusername/hostelswap
 
 ## 🙏 Acknowledgements
 
