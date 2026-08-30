@@ -15,9 +15,10 @@ class ResponsiveHelper {
   }
 
   static int getCrossAxisCount(BuildContext context) {
-    if (isMobile(context)) return 1;
-    if (isTablet(context)) return 2;
-    return 3;
+    // 🔥 Increased from 1/2/3 → more columns = narrower cards per row
+    if (isMobile(context)) return 2;
+    if (isTablet(context)) return 4;
+    return 6;
   }
 
   static double getPadding(BuildContext context) {

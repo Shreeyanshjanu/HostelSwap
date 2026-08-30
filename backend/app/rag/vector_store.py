@@ -1,20 +1,27 @@
+# app/rag/vector_store.py
+
 import os
-from typing import List, Dict, Tuple
+from typing import List, Dict, Any
 import chromadb
 from chromadb.config import Settings
-from rag.embedding import EmbeddingGenerator
-
+from .embedding import EmbeddingGenerator
 
 class VectorStore:
-    def __init__(self,collection_name:str="hostel_policies",persist_path:str="rag/chroma_db"):
+    """Manages ChromaDB vector storage and retrieval."""
+    
+    def __init__(self, collection_name: str = "hostel_policies", persist_path: str = "./chroma_db"):
         self.embedding_generator = EmbeddingGenerator()
         self.collection_name = collection_name
         
-        self.client = chromadb.Client(Settings(
-            chroma_db_impl="duckdb+parquet",
-            persist_directory=persist_path
-        ))
+        # Ensure persist directory exists
+        os.makedirs(persist_path, exist_ok=True)
         
+        # Initialize ChromaDB client with persistence
+        self.client = chromadb.PersistentClient(
+            path=persist_path
+        )
+        
+        # Get or create collection
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": "cosine"}
@@ -26,7 +33,7 @@ class VectorStore:
             return
         
         texts = [chunk["text"] for chunk in chunks]
-        ids = [f"chunk_{i}" for i, _ in enumerate(chunks)]
+        ids = [f"chunk_{i}" for i in range(len(chunks))]
         
         # Generate embeddings
         embeddings = self.embedding_generator.encode(texts)
@@ -38,8 +45,8 @@ class VectorStore:
             ids=ids,
             metadatas=[{"source": "hostel_policy.pdf", "index": i} for i in range(len(chunks))]
         )
-        
-    def search(self, query: str, top_k: int = 3) -> List[Dict[str, any]]:
+    
+    def search(self, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
         """Search for similar chunks."""
         query_embedding = self.embedding_generator.encode_query(query)
         
@@ -48,7 +55,7 @@ class VectorStore:
             n_results=top_k
         )
         
-        if not results['documents']:
+        if not results['documents'] or not results['documents'][0]:
             return []
         
         # Format results
@@ -60,19 +67,18 @@ class VectorStore:
             }
             for i in range(len(results['documents'][0]))
         ]
-        
+    
     def count(self) -> int:
         """Get total number of documents in collection."""
         return self.collection.count()
-
+    
     def clear(self) -> None:
         """Clear all documents from collection."""
-        # Delete and recreate collection
-        self.client.delete_collection(self.collection_name)
+        try:
+            self.client.delete_collection(self.collection_name)
+        except:
+            pass
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name,
             metadata={"hnsw:space": "cosine"}
         )
-        
-
-    

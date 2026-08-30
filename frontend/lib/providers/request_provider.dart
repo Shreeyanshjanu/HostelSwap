@@ -1,4 +1,5 @@
-// Riverpod - Requests state
+// lib/providers/request_provider.dart
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/auth_provider.dart';
 import '../models/request_model.dart';
@@ -7,14 +8,19 @@ import '../services/supabase_service.dart';
 
 final requestServiceProvider = Provider((ref) => SupabaseService());
 
-final requestProvider = FutureProvider.family<List<RequestModel>, Map<String, dynamic>>((ref, filters) async {
+// 🔥 CHANGED: Use a record instead of Map for stable equality
+final requestProvider = FutureProvider.family<List<RequestModel>, ({
+  String? hostel,
+  bool? ac,
+  int? seater,
+})>((ref, filters) async {
   final service = ref.read(requestServiceProvider);
   final user = ref.read(authProvider);
   
   return await service.getRequests(
-    hostel: filters['hostel'],
-    ac: filters['ac'],
-    seater: filters['seater'],
+    hostel: filters.hostel,
+    ac: filters.ac,
+    seater: filters.seater,
     gender: user?.gender,
     userId: user?.collegeId,
   );

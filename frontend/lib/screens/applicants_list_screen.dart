@@ -9,7 +9,8 @@ class ApplicantsListScreen extends ConsumerStatefulWidget {
   const ApplicantsListScreen({super.key});
 
   @override
-  ConsumerState<ApplicantsListScreen> createState() => _ApplicantsListScreenState();
+  ConsumerState<ApplicantsListScreen> createState() =>
+      _ApplicantsListScreenState();
 }
 
 class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
@@ -102,7 +103,9 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
                 CircleAvatar(
                   backgroundColor: Colors.blue.shade100,
                   child: Text(
-                    applicant.name.isNotEmpty ? applicant.name[0].toUpperCase() : '?',
+                    applicant.name.isNotEmpty
+                        ? applicant.name[0].toUpperCase()
+                        : '?',
                     style: TextStyle(color: Colors.blue.shade700),
                   ),
                 ),
@@ -113,11 +116,17 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
                     children: [
                       Text(
                         applicant.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       Text(
                         'ID: ${applicant.collegeId}',
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -141,7 +150,9 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: _isLoading ? null : () => _finalizeSwap(interest),
+                    onPressed: _isLoading
+                        ? null
+                        : () => _finalizeSwap(interest),
                     icon: const Icon(Icons.check_circle, size: 16),
                     label: const Text('Finalize'),
                     style: ElevatedButton.styleFrom(
@@ -209,7 +220,10 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to show contact: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Failed to show contact: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -229,7 +243,9 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Confirm swap with ${interest.applicant?.name ?? 'this student'}?'),
+            Text(
+              'Confirm swap with ${interest.applicant?.name ?? 'this student'}?',
+            ),
             const SizedBox(height: 8),
             const Text(
               'They will receive a confirmation request.',
@@ -257,7 +273,7 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('✅ Swap finalized! Applicant notified.'),
+                      content: Text('"" Swap finalized! Applicant notified.'),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -266,7 +282,10 @@ class _ApplicantsListScreenState extends ConsumerState<ApplicantsListScreen> {
               } catch (e) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to finalize: $e'), backgroundColor: Colors.red),
+                    SnackBar(
+                      content: Text('Failed to finalize: $e'),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                 }
               }

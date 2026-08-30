@@ -23,10 +23,30 @@ class SupabaseService {
     }
   }
 
-  Future<UserModel> createUser(String collegeId, String gender) async {
+  // Future<UserModel> createUser(String collegeId, String gender) async {
+  //   final response = await supabase
+  //       .from('users')
+  //       .insert({'college_id': collegeId, 'name': collegeId, 'gender': gender})
+  //       .select()
+  //       .single();
+
+  //   return UserModel.fromJson(response);
+  // }
+  // Inside SupabaseService class
+
+  Future<UserModel> createUser(
+    String collegeId,
+    String gender, {
+    String? name,
+  }) async {
     final response = await supabase
         .from('users')
-        .insert({'college_id': collegeId, 'name': collegeId, 'gender': gender})
+        .insert({
+          'college_id': collegeId,
+          'name':
+              name ?? collegeId, // Use provided name or fallback to collegeId
+          'gender': gender,
+        })
         .select()
         .single();
 
@@ -136,7 +156,35 @@ class SupabaseService {
   }
 
   Future<void> deleteRequest(String requestId) async {
-    await supabase.from('requests').delete().eq('id', requestId);
+    try {
+      await supabase.from('requests').delete().eq('id', requestId);
+    } catch (e) {
+      throw Exception('Failed to delete request: $e');
+    }
+  }
+
+  // ============ DUPLICATE CHECK ============
+  Future<bool> hasDuplicateRequest(
+    String userId,
+    Map<String, dynamic> requestData,
+  ) async {
+    try {
+      final response = await supabase
+          .from('requests')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('status', 'active')
+          .eq('current_hostel', requestData['current_hostel'])
+          .eq('current_ac', requestData['current_ac'])
+          .eq('current_seater', requestData['current_seater'])
+          .eq('desired_hostel', requestData['desired_hostel'])
+          .eq('desired_ac', requestData['desired_ac'])
+          .eq('desired_seater', requestData['desired_seater'])
+          .maybeSingle();
+      return response != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   // ============ INTERESTS ============
@@ -203,21 +251,29 @@ class SupabaseService {
     String? gender,
     String? userId,
   }) {
+    // 🔥 Only use a single filter on the Realtime subscription
     var query = supabase
         .from('requests')
         .stream(primaryKey: ['id'])
         .eq('status', 'active');
 
-    if (gender == 'male') {
-      query = query.inFilter('desired_hostel', ['BH-1', 'BH-2', 'BH-3']);
-    } else if (gender == 'female') {
-      query = query.inFilter('desired_hostel', ['GH-1', 'GH-2', 'GH-3']);
-    }
+    //  REMOVED the .inFilter() - it causes the subscription error
 
     query.listen((data) async {
       List<RequestModel> requests = [];
       for (var json in data) {
         requests.add(RequestModel.fromJson(json));
+      }
+
+      // 🔥 Apply gender filter CLIENT-SIDE
+      if (gender == 'male') {
+        requests = requests
+            .where((r) => ['BH-1', 'BH-2', 'BH-3'].contains(r.desiredHostel))
+            .toList();
+      } else if (gender == 'female') {
+        requests = requests
+            .where((r) => ['GH-1', 'GH-2', 'GH-3'].contains(r.desiredHostel))
+            .toList();
       }
 
       // Check applied status

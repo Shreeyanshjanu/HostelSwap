@@ -17,3 +17,28 @@ backend/venv/
 Thumbs.dbbackend/.env
 backend/firebase-credentials.json
 backend/chroma_db/
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Local tools
+ngrok.exe

@@ -73,4 +73,4 @@ for file_path, content in files.items():
     else:
         print(f"Already exists: {path}")
 
-print("\n✅ Flutter lib structure created successfully!")
+print("\n"" Flutter lib structure created successfully!")

@@ -8,12 +8,13 @@ class CreateRequestScreen extends ConsumerStatefulWidget {
   const CreateRequestScreen({super.key});
 
   @override
-  ConsumerState<CreateRequestScreen> createState() => _CreateRequestScreenState();
+  ConsumerState<CreateRequestScreen> createState() =>
+      _CreateRequestScreenState();
 }
 
 class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   String? _currentHostel;
   bool? _currentAc;
   int? _currentSeater;
@@ -35,7 +36,9 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
         padding: const EdgeInsets.all(24),
         child: Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Form(
@@ -49,7 +52,7 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   DropdownButtonFormField<String>(
                     decoration: const InputDecoration(
                       labelText: 'Current Hostel',
@@ -57,10 +60,15 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                     ),
                     value: _currentHostel,
                     items: AppConstants.allHostels.map((hostel) {
-                      return DropdownMenuItem(value: hostel, child: Text(hostel));
+                      return DropdownMenuItem(
+                        value: hostel,
+                        child: Text(hostel),
+                      );
                     }).toList(),
-                    onChanged: (value) => setState(() => _currentHostel = value),
-                    validator: (value) => value == null ? 'Select hostel' : null,
+                    onChanged: (value) =>
+                        setState(() => _currentHostel = value),
+                    validator: (value) =>
+                        value == null ? 'Select hostel' : null,
                   ),
                   const SizedBox(height: 12),
 
@@ -69,7 +77,9 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                       labelText: 'Current Room Type',
                       border: OutlineInputBorder(),
                     ),
-                    value: _currentAc != null ? (_currentAc! ? 'AC' : 'Non-AC') : null,
+                    value: _currentAc != null
+                        ? (_currentAc! ? 'AC' : 'Non-AC')
+                        : null,
                     items: AppConstants.acTypes.map((type) {
                       return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
@@ -78,7 +88,8 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                         _currentAc = value == 'AC';
                       });
                     },
-                    validator: (value) => value == null ? 'Select room type' : null,
+                    validator: (value) =>
+                        value == null ? 'Select room type' : null,
                   ),
                   const SizedBox(height: 12),
 
@@ -89,21 +100,26 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                     ),
                     value: _currentSeater,
                     items: AppConstants.seaterTypes.map((seater) {
-                      return DropdownMenuItem(value: seater, child: Text('$seater-Seater'));
+                      return DropdownMenuItem(
+                        value: seater,
+                        child: Text('$seater-Seater'),
+                      );
                     }).toList(),
-                    onChanged: (value) => setState(() => _currentSeater = value),
-                    validator: (value) => value == null ? 'Select seater' : null,
+                    onChanged: (value) =>
+                        setState(() => _currentSeater = value),
+                    validator: (value) =>
+                        value == null ? 'Select seater' : null,
                   ),
-                  
+
                   const Divider(height: 32),
-                  
+
                   // Desired Room Section
                   const Text(
                     'Room You Want',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   SwitchListTile(
                     title: const Text('I\'m flexible (open to any room type)'),
                     value: _isFlexible,
@@ -118,7 +134,7 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                     },
                     activeColor: Colors.blue,
                   ),
-                  
+
                   const SizedBox(height: 8),
 
                   DropdownButtonFormField<String>(
@@ -128,10 +144,15 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                     ),
                     value: _desiredHostel,
                     items: AppConstants.allHostels.map((hostel) {
-                      return DropdownMenuItem(value: hostel, child: Text(hostel));
+                      return DropdownMenuItem(
+                        value: hostel,
+                        child: Text(hostel),
+                      );
                     }).toList(),
-                    onChanged: (value) => setState(() => _desiredHostel = value),
-                    validator: (value) => value == null ? 'Select desired hostel' : null,
+                    onChanged: (value) =>
+                        setState(() => _desiredHostel = value),
+                    validator: (value) =>
+                        value == null ? 'Select desired hostel' : null,
                   ),
                   const SizedBox(height: 12),
 
@@ -140,16 +161,24 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                       labelText: 'Desired Room Type',
                       border: OutlineInputBorder(),
                     ),
-                    value: _desiredAc != null ? (_desiredAc! ? 'AC' : 'Non-AC') : null,
+                    value: _desiredAc != null
+                        ? (_desiredAc! ? 'AC' : 'Non-AC')
+                        : null,
                     items: [
-                      if (_isFlexible) const DropdownMenuItem(value: null, child: Text('Flexible')),
+                      if (_isFlexible)
+                        const DropdownMenuItem(
+                          value: null,
+                          child: Text('Flexible'),
+                        ),
                       ...AppConstants.acTypes.map((type) {
                         return DropdownMenuItem(value: type, child: Text(type));
                       }),
                     ],
                     onChanged: (value) {
                       setState(() {
-                        _desiredAc = value == 'AC' ? true : (value == 'Non-AC' ? false : null);
+                        _desiredAc = value == 'AC'
+                            ? true
+                            : (value == 'Non-AC' ? false : null);
                       });
                     },
                   ),
@@ -162,14 +191,22 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                     ),
                     value: _desiredSeater,
                     items: [
-                      if (_isFlexible) const DropdownMenuItem(value: null, child: Text('Flexible')),
+                      if (_isFlexible)
+                        const DropdownMenuItem(
+                          value: null,
+                          child: Text('Flexible'),
+                        ),
                       ...AppConstants.seaterTypes.map((seater) {
-                        return DropdownMenuItem(value: seater, child: Text('$seater-Seater'));
+                        return DropdownMenuItem(
+                          value: seater,
+                          child: Text('$seater-Seater'),
+                        );
                       }),
                     ],
-                    onChanged: (value) => setState(() => _desiredSeater = value),
+                    onChanged: (value) =>
+                        setState(() => _desiredSeater = value),
                   ),
-                  
+
                   const SizedBox(height: 24),
 
                   // Submit Button
@@ -186,7 +223,10 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text('Post Request', style: TextStyle(fontSize: 16)),
+                          : const Text(
+                              'Post Request',
+                              style: TextStyle(fontSize: 16),
+                            ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -207,7 +247,10 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
       final user = ref.read(authProvider);
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please login first'), backgroundColor: Colors.red),
+          const SnackBar(
+            content: Text('Please login first'),
+            backgroundColor: Colors.red,
+          ),
         );
         return;
       }
@@ -227,11 +270,11 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
         };
 
         await ref.read(createRequestProvider(requestData).future);
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('✅ Request posted successfully!'),
+              content: Text('"" Request posted successfully!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -241,7 +284,7 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('❌ Failed to post request: $e'),
+              content: Text(' Failed to post request: $e'),
               backgroundColor: Colors.red,
             ),
           );

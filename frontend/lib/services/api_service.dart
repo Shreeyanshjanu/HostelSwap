@@ -5,27 +5,44 @@ import '../config/api_config.dart';
 class ApiService {
   final http.Client client = http.Client();
 
+  // 🔥 Helper to get headers with ngrok bypass
+  Map<String, String> _getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true', // 🔥 CRITICAL FIX
+    };
+  }
+
   /// Health check
   Future<bool> healthCheck() async {
     try {
+      print('🔄 Sending health check to: ${ApiConfig.healthCheckEndpoint}');
+      print('📤 Headers: ${_getHeaders()}'); // "" Add this line
+
       final response = await client.get(
         Uri.parse(ApiConfig.healthCheckEndpoint),
+        headers: _getHeaders(),
       );
+
+      print('📥 Response status: ${response.statusCode}');
+      print('📥 Response body preview: ${response.body.substring(0, 100)}');
+
       return response.statusCode == 200;
     } catch (e) {
+      print(' Health check error: $e');
       return false;
     }
   }
 
   /// Send natural language to chatbot
-  Future<Map<String, dynamic>> sendChatMessage(String message, String userId) async {
+  Future<Map<String, dynamic>> sendChatMessage(
+    String message,
+    String userId,
+  ) async {
     final response = await client.post(
       Uri.parse(ApiConfig.chatEndpoint),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user_id': userId,
-        'message': message,
-      }),
+      headers: _getHeaders(),
+      body: jsonEncode({'user_id': userId, 'message': message}),
     );
 
     if (response.statusCode == 200) {
@@ -39,7 +56,7 @@ class ApiService {
   Future<Map<String, dynamic>> askRAGQuery(String query) async {
     final response = await client.post(
       Uri.parse(ApiConfig.ragQueryEndpoint),
-      headers: {'Content-Type': 'application/json'},
+      headers: _getHeaders(),
       body: jsonEncode({'query': query}),
     );
 
@@ -58,7 +75,7 @@ class ApiService {
   ) async {
     final response = await client.post(
       Uri.parse(ApiConfig.showContactEndpoint),
-      headers: {'Content-Type': 'application/json'},
+      headers: _getHeaders(),
       body: jsonEncode({
         'request_id': requestId,
         'requester_id': requesterId,
@@ -85,7 +102,7 @@ class ApiService {
   ) async {
     final response = await client.post(
       Uri.parse(ApiConfig.finalizeSwapEndpoint),
-      headers: {'Content-Type': 'application/json'},
+      headers: _getHeaders(),
       body: jsonEncode({
         'request_id': requestId,
         'requester_id': requesterId,
@@ -102,7 +119,7 @@ class ApiService {
   Future<void> withdrawRequest(String requestId) async {
     final response = await client.post(
       Uri.parse(ApiConfig.withdrawRequestEndpoint),
-      headers: {'Content-Type': 'application/json'},
+      headers: _getHeaders(),
       body: jsonEncode({'request_id': requestId}),
     );
 

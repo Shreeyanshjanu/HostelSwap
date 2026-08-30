@@ -150,7 +150,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
       setState(() {
         _messages.add({
           'sender': 'bot',
-          'message': '⚠️ Please login first to use the chatbot.',
+          'message': ' Please login first to use the chatbot.',
         });
         _isLoading = false;
       });
@@ -186,7 +186,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
           _messages.add({
             'sender': 'bot',
             'message':
-                '✅ ${response['message']}\n\n'
+                '"" ${response['message']}\n\n'
                 '📋 Your request has been posted! Check the dashboard to see it.',
           });
         });
@@ -209,7 +209,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
       setState(() {
         _messages.add({
           'sender': 'bot',
-          'message': '❌ Error: $e\n\nPlease try again or use the manual form.',
+          'message': ' Error: $e\n\nPlease try again or use the manual form.',
         });
       });
     }
