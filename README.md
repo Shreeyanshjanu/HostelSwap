@@ -202,7 +202,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
- – shreeyansh and harshit singh
+ – shreeyansh and harshit pandey
 
 
 ## 🙏 Acknowledgements
